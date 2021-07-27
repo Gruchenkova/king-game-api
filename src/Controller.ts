@@ -43,14 +43,4 @@ export class GameController {
     buyBuilding(@Param('name') name: string) {
       gameManager.build(name);
     }
-
-    @Put('/users/:id')
-    put(@Param('id') id: number, @Body() user: any) {
-        return 'Updating a user...';
-    }
-
-    @Delete('/users/:id')
-    remove(@Param('id') id: number) {
-        return 'Removing user...';
-    }
 }

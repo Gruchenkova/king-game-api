@@ -53,7 +53,6 @@ export class GameManager {
     consumeResources() {
         console.log('consume resources')
         this.resourceService.deductResources(this.population, this.resources);
-        // TODO check if no resources left
         if (this.resourceService.noResourcesLeft(this.resources)) {
             // stop game
         }
@@ -71,8 +70,7 @@ export class GameManager {
         }
     }
 
-    // по расписанию
-    // runBarbariansEveryTwelveMin = schedule.scheduleJob('12 * * * *', this.runBarbariansRaid);
+    // по расписанию 12 min
     runBarbariansRaid() {
 
     }
