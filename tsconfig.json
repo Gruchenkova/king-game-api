@@ -1,0 +1,15 @@
+{
+    "compilerOptions": {
+      "module": "commonjs",// указывает метод генерирования кода модуля. Node использует commonjs
+      "esModuleInterop": true,
+      "target": "es6",// указывает уровень языка на выходе
+      "moduleResolution": "node",// помогает компилятору определить, на что ссылается импорт.
+      "sourceMap": true,
+      "outDir": "dist", // Это место для вывода файлов .js после транспиляции. В этом учебном модуле мы сохраним его как dist.
+      "noImplicitAny": false,
+      "baseUrl": ".",
+      "emitDecoratorMetadata": true,
+      "experimentalDecorators": true
+    },
+    "lib": ["es2015"]
+  }
