@@ -34,16 +34,16 @@ export class GameManager {
         const runBarbariansRaidJob = scheduleJob('generatePeople', '*/12 * * * *', () => this.runBarbariansRaid());
     }
 
-    build(name) {
+    build(name : string) {
         // постройка зданий
         console.log('build')
-        let building = this.buildingService.createBuilding(name);
-        this.buildings.push(building);
-        let amount = getResourceAmount(building.cost, Resource.gold)
+        let newBuilding = this.buildingService.createBuilding(name);
+        this.buildings.push(newBuilding);
+        let amount = getResourceAmount(newBuilding.cost, Resource.gold)
         this.resourceService.consumeResource(Resource.gold, amount, this.resources);
-        let humanType = building.getHumanType();
+        let humanType = newBuilding.getHumanType();
         let freeHuman = getFreeHumanByType(this.population, humanType);
-        building.addHumans(freeHuman);
+        newBuilding.addHumans(freeHuman);
     }
 
     // every 1 minute
@@ -69,13 +69,14 @@ export class GameManager {
 
     // по расписанию 12 min
     runBarbariansRaid() {
+        console.log('raid by barbarians')
         let gold = getResourceAmount(this.resources, Resource.gold);
         let power = getResourceAmount(this.resources, Resource.power);
         let food = getResourceAmount(this.resources, Resource.food);
-        let formula = 1 / (1 + Math.pow(Math.E , -(power / gold)));
-        if(formula < 0.6){
-            this.resourceService.consumeResource(Resource.food,  food * 0.3, this.resources);
-            this.resourceService.consumeResource(Resource.gold, gold * 0.3, this.resources);
+        let result = 1 / (1 + Math.pow(Math.E , -(power / gold)));
+        if(result < 0.6){
+            this.resourceService.consumeResource(Resource.food,  Math.round(food * 0.3), this.resources);
+            this.resourceService.consumeResource(Resource.gold, Math.round(gold * 0.3), this.resources);
         }
     }
 

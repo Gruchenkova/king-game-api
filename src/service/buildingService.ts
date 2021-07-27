@@ -27,7 +27,7 @@ export function getAllBuildings(): Building[] {
 
 export class BuildingService {
 
-    createBuilding(name): Building {
+    createBuilding(name:string): Building {
         for( let i = 0; i < allBuildings.length; i++){
             if (allBuildings[i].name === name){
                 return JSON.parse(JSON.stringify(allBuildings[i]));
