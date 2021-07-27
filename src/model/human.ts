@@ -18,7 +18,9 @@ export class Human {
         building.currentPopulation.push(this);
     }
 }
-
+export function createOneHuman(humanType: HumanType, amount: number) {
+    return new Human(humanType)
+}
 export function createHuman(humanType: HumanType, amount: number) {
     let result: Human[] = [];
     for (let i = 0; i < amount; i++) {
