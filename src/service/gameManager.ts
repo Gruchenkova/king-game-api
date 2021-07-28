@@ -61,7 +61,7 @@ export class GameManager {
         this.resourceService.deductResources(this.population, this.resources);
         if (this.resourceService.noResourcesLeft(this.resources)) {
             // stop game
-            this.consumeJob.cansel();
+            this.consumeJob.cancel();
             this.generatePeopleJob.cancel();
             this.generateResourcesJob.cancel();
             this.runBarbariansRaidJob.cancel();
