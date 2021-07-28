@@ -30,12 +30,12 @@ export class Building {
     }
     addHumans(humans: Human[]) {
         let free = Math.min(this.capacity.capacity - this.currentPopulation.length, humans.length);
-        for (let i = 0; i < free ; i++) {
-           this.addHuman(humans[i]);
+        for (let i = 0; i < free; i++) {
+            this.addHuman(humans[i]);
         }
     }
-    isPopulated(){
-       return this.currentPopulation.length === this.capacity.capacity;
+    isPopulated() {
+        return this.currentPopulation.length === this.capacity.capacity;
     }
     getHumanType() {
         return this.capacity.humanType;

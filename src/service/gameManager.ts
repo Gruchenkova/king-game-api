@@ -5,6 +5,7 @@ import { ResourceService } from "./resourceService";
 import { BuildingService } from "./buildingService";
 import { scheduleJob } from 'node-schedule';
 import { getFreeBuildingByHumanType, getFreeHumanByType, getResourceAmount } from "../utils/utils";
+import { gameManager } from "src/Controller";
 
 export class GameManager {
     buildings: Building[];
@@ -13,6 +14,11 @@ export class GameManager {
 
     resourceService = new ResourceService();
     buildingService = new BuildingService();
+
+    consumeJob;
+    generatePeopleJob;
+    generateResourcesJob;
+    runBarbariansRaidJob;
 
     constructor() {
         console.log('start game manager')
@@ -28,10 +34,10 @@ export class GameManager {
             new ResourceAmount(Resource.power, 0)
         ]
 
-        const consumeJob = scheduleJob('consumeResources', '*/1 * * * *', () => this.consumeResources());
-        const generatePeopleJob = scheduleJob('generatePeople', '*/1 * * * *', () => this.generatePeople());
-        const generateResourcesJob = scheduleJob('generatePeople', '*/5 * * * *', () => this.generateResources());
-        const runBarbariansRaidJob = scheduleJob('generatePeople', '*/12 * * * *', () => this.runBarbariansRaid());
+         this.consumeJob = scheduleJob('consumeResources', '*/1 * * * *', () => this.consumeResources());
+         this.generatePeopleJob = scheduleJob('generatePeople', '*/2 * * * *', () => this.generatePeople());
+         this.generateResourcesJob = scheduleJob('generatePeasantResourses', '*/2 * * * *', () => this.generatePeasantResourses());
+         this.runBarbariansRaidJob = scheduleJob('runBarbariansRaid', '*/12 * * * *', () => this.runBarbariansRaid());
     }
 
     build(name : string) {
@@ -44,6 +50,9 @@ export class GameManager {
         let humanType = newBuilding.getHumanType();
         let freeHuman = getFreeHumanByType(this.population, humanType);
         newBuilding.addHumans(freeHuman);
+        if (humanType !== HumanType.peasant){
+            this.generateResources(newBuilding);
+        }
     }
 
     // every 1 minute
@@ -52,18 +61,27 @@ export class GameManager {
         this.resourceService.deductResources(this.population, this.resources);
         if (this.resourceService.noResourcesLeft(this.resources)) {
             // stop game
+            this.consumeJob.cansel();
+            this.generatePeopleJob.cancel();
+            this.generateResourcesJob.cancel();
+            this.runBarbariansRaidJob.cancel();
         }
     }
 
     // по расписанию
     // добавление ресурсов которые генерируют здания
     // every 2 minute
-
-    generateResources() {
-        console.log('generate resources')
+    generatePeasantResourses() {
+        console.log('generate Peasant`s resources')
         let myBuidings = this.buildingService.getBuildingsWithPeople(this.buildings);
         if (myBuidings.length != 0) {
             this.resourceService.createResources(myBuidings, this.resources)
+        }
+    }
+    generateResources(building:Building) {
+        console.log('generate resources');
+        if(building.currentPopulation.length === building.capacity.capacity){
+            this.resourceService.onceCreateResources(building, this.resources)
         }
     }
 
@@ -109,6 +127,7 @@ export class GameManager {
     }
     // получить ресурсы которые у нас есть
     getAllResourse(): ResourceAmount[] {
+        console.log(this.resources)
         return this.resources
     }
 

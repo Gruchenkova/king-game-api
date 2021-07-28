@@ -30,7 +30,8 @@ export class BuildingService {
     createBuilding(name:string): Building {
         for( let i = 0; i < allBuildings.length; i++){
             if (allBuildings[i].name === name){
-                return JSON.parse(JSON.stringify(allBuildings[i]));
+                let objBuilding = JSON.parse(JSON.stringify(allBuildings[i])) as Building;
+                return new Building(objBuilding.name, objBuilding.cost, objBuilding.capacity, objBuilding.benefit, objBuilding.currentPopulation);
             }
         }
         // проверить, что ресурсов на здание хватает
@@ -58,10 +59,7 @@ export class BuildingService {
     getBuildingsWithPeople(buildings: Building[]) {
         let buildingWithPeople: Building[] = [];
         for (let i = 0; i < buildings.length; i++) {
-            const building = allBuildings.find(building => building.name === buildings[i].name);
-            const firstObj = buildings[i].currentPopulation;
-            const secondObj = building.currentPopulation;
-            if (JSON.stringify(firstObj) == JSON.stringify(secondObj)) {
+            if ( buildings[i].isPopulated()) {
                 buildingWithPeople.push(buildings[i])
             }
         }

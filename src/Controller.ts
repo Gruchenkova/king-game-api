@@ -39,8 +39,9 @@ export class GameController {
         return buildings;
     }
 
-   @Put('/building/:name')
+   @Post('/building/:name')
     buyBuilding(@Param('name') name: string) {
       gameManager.build(name);
+      return `You buy new building ${name}`
     }
 }

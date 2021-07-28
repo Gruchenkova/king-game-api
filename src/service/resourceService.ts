@@ -1,7 +1,7 @@
-import {Resource, ResourceAmount} from "../model/resource";
-import {Human, HumanType} from "../model/human";
-import {Building} from "../model/building";
-import {getResourceAmount} from "../utils/utils";
+import { Resource, ResourceAmount } from "../model/resource";
+import { Human, HumanType } from "../model/human";
+import { Building } from "../model/building";
+import { getResourceAmount } from "../utils/utils";
 
 // интерфейс для функции уменьшения еоличества ресурсов
 interface ConsumerFunction {
@@ -45,15 +45,21 @@ export class ResourceService {
     deductResources(population: Human[], resources: ResourceAmount[]) {
         population.forEach(h => this.consumingBehaviour.get(h.type)(resources))
     }
-
+    onceCreateResources(building: Building, resources: ResourceAmount[]) {
+        let r = building.benefit;
+        for (let k = 0; k < r.length; k++) {
+            this.generateResource(r[k].resourceType, r[k].amount, resources)
+        }
+    }
     // добавляем ресурсы
     createResources(buildings: Building[], resources: ResourceAmount[]) {
         // TODO здесь каждое заполненное здание создает ресурсы и добавляет их в resources
         for (let i = 0; i < buildings.length; i++) {
             let r = buildings[i].benefit;
-            for (let k = 0; k < r.length; k++) {
-                resources.filter(res => res.resourceType === r[k].resourceType)
-                    .forEach(res => res.amount + r[k].amount)
+            if (buildings[i].capacity.humanType === HumanType.peasant) {
+                for (let k = 0; k < r.length; k++) {
+                    this.generateResource(r[k].resourceType, r[k].amount, resources)
+                }
             }
         }
     }
